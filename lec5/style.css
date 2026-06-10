@@ -1,0 +1,91 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+    background-image: url("netflix.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    
+}
+
+
+nav, div {
+    position: relative;
+   
+}
+
+nav h1 {
+    color: red;
+    font-size: 40px;
+    padding: 20px 40px;
+}
+
+
+div {
+    color: white;
+    text-align: center;
+    margin-top: 150px;
+}
+
+
+div h1 {
+    font-size: 60px;
+    font-weight: bold;
+    max-width: 800px;
+    margin: auto;
+}
+
+
+div p {
+    font-size: 22px;
+    margin-top: 20px;
+}
+
+
+form {
+    margin-top: 20px;
+}
+
+
+.email-input {
+    font-size: 18px;
+    padding: 15px;
+    width: 300px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+}
+
+/* Button */
+button {
+    font-size: 18px;
+    padding: 15px 25px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: 0.3s ease;
+    border-radius: 4px;
+}
+
+/* Hover effect */
+button:hover {
+    background-color: darkred;
+    transform: scale(1.05);
+}
