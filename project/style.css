@@ -1,0 +1,52 @@
+*{
+    margin: 0;
+    
+}
+.head{
+    background-color: blue;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+.head ul{
+    list-style: none;
+    display: flex;
+    gap: 40px;
+}
+.main{
+    text-align: center;
+    padding: 100px;
+    background: linear-gradient(to right,white,blue,white);
+}
+.main h1,p{
+    padding: 10px;
+}
+.box{
+    display: flex;
+    justify-content: center;
+}
+.card{
+    padding: 10px;
+    background-color: aliceblue;
+    gap: 20px;
+    margin: 20px;
+    border-radius: 20px;
+}
+.box2{
+    display: flex;
+    justify-content: center;
+}
+.box21{
+    margin: 50px;
+    padding: 10px;
+    background-color: aliceblue;
+}
+.box21 h3{
+    text-align: center;
+}
+footer{
+    text-align: center;
+    background-color: blue;
+    height: 4vh;
+    padding: 3px;
+}
