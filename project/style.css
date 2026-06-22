@@ -37,8 +37,8 @@ body{
     padding:120px 20px;
     color:white;
     background:
-    linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),
-    linear-gradient(135deg,#0d6efd,#00c6ff);
+    linear-gradient(rgba(13,110,253,.75),rgba(0,198,255,.75)),
+    url('https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?q=80&w=1600') center/cover no-repeat;
 }
 
 .main h1{
