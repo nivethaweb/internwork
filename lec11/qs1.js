@@ -1,4 +1,4 @@
-
+// Find the average of 5 numbers.
 let n1=10;
 let n2=20;
 let n3=30;
@@ -7,19 +7,21 @@ let n5=50;
 let average=(n1+n2+n3+n4+n5)/5;
 console.log("average=",average);
 
+// Calculate the area and perimeter of a circle.
 let redius=5;
 let area=Math.PI*redius*redius;
 let permiter=2*Math.PI*redius;
 console.log("Area=",area);
 console.log("permiter=",permiter);
 
-
+// Convert minutes into hours and minutes.
 let totelMinutes=130;
 let hours=Math.floor(totelMinutes/60);
 let minutes=totelMinutes % 60;
 console.log("Hours=",hours);
 console.log("Minutes=",minutes);
 
+// Calculate the total marks and percentage of 5 subjects.
 let s1=80;
 let s2=70;
 let s3=91;
@@ -30,6 +32,7 @@ let percentage=(total/500)*100;
 console.log("Total marks=",total);
 console.log("Percentage=",percentage +"%");
 
+// Check whether a number is positive, negative, or zero.
 let num=-5;
 if(num>0){
     console.log("Possitive");
@@ -42,17 +45,19 @@ else if(num==0){
     console.log("Zero");
 }
 
+// Convert age in years into days.
 let years=5;
 let days=365* years;
 console.log("Age in days=",days);
 
-
+// Find the square and cube of a number.
 let num1=5;
 let square=num1*num1;
 let cube=num1*num1*num1;
 console.log("Square=",square);
 console.log("Cube=",cube);
 
+// Calculate electricity bill for given units.
 let units=120;
 let rate=5;
 let bill= units*rate;
