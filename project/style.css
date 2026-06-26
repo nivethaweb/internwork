@@ -40,6 +40,13 @@ body{
     linear-gradient(rgba(13,110,253,.75),rgba(0,198,255,.75)),
     url('https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?q=80&w=1600') center/cover no-repeat;
 }
+hero-btns {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+}
 
 .main h1{
     font-size:60px;
@@ -75,25 +82,27 @@ body{
     border-radius:20px;
     padding:25px;
     text-align:center;
-    background:white;
-    box-shadow:0 5px 15px rgba(0,0,0,.1);
+    background:#fff;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
     transition:.3s;
 }
 
 .card:hover{
     transform:translateY(-10px);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.12);
 }
 
 .card img{
-    width:70px;
-    height:70px;
+    width:72px;
+    height:72px;
     margin:0 auto 15px;
    
    
 }
 
 .card h2{
-    color:#0d6efd;
+    font-size: 24px;
+    color: #0d3b66;
     margin-bottom:10px;
     font-size:24px;
 }
@@ -101,6 +110,7 @@ body{
 .card p{
     color:#555;
     line-height:1.6;
+    font-size: 16px;
 }
 
 
@@ -114,13 +124,13 @@ body{
 
 .box21{
     width:250px;
-    background:#0d6efd;
+    background:linear-gradient(135deg, #0d3b66, #1d4e89);
     color:white;
     text-align:center;
     padding:25px;
-    border-radius:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,.15);
-    transition:.3s;
+    border-radius:18px;
+    box-shadow:0 10px 24px rgba(13,59,102,0.18);
+    transition:.3s ease;
 }
 
 .box21:hover{
@@ -128,12 +138,16 @@ body{
 }
 
 .box21 h3{
-    font-size:35px;
+    font-size:38px;
     margin-bottom:10px;
+    font-weight: 800;
+    color: #ffd166;
 }
 
 .box21 p{
+    font-size: 18px;
     margin:0;
+    letter-spacing: 0.3px;
 }
 
 
@@ -493,20 +507,66 @@ footer{
     min-height: 100vh;
 }
 
-.candi-hero{
-    background-color: #082465;
-    color: white;
-    text-align: center;
-    padding: 30px;
+.candidate-hero {
+      background: linear-gradient(rgba(13,59,102,0.86), rgba(13,59,102,0.86)),url("https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1400&q=80");
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+      padding: 90px 20px 80px;
+    }
+
+
+ .candidate-hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+.candidate-hero p {
+      max-width: 900px;
+      margin: auto;
+      font-size: 18px;
+      line-height: 1.8;
+      color: #f3f3f3;
+    }
+
+.search-box{
+    width: 500px;
+    max-width: 90%;
+    height: 50px;
+    margin: 35px auto;
+    background: white;
+    border: 2px solid #2563eb;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
 }
 
-.candi-hero h2{
-    font-size: 45px;
+.search-icon{
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
 }
 
-.candi-hero p{
-    font-size: 24px;
+.search-box input{
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 17px;
+    background: transparent;
 }
+
+.search-box:focus-within{
+    border-color: #0d3b66;
+    box-shadow: 0 0 10px rgba(37,99,235,0.3);
+}
+
+.search-box input::placeholder{
+    color: #777;
+}
+
 
 .candi-box{
     display: flex;
@@ -525,6 +585,17 @@ footer{
     box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     transition: 0.3s;
 }
+
+.party-name {
+      display: inline-block;
+      background: #e9f2ff;
+      color: #1d4e89;
+      padding: 8px 14px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
 
 .candi-card:hover{
     transform: translateY(-8px);

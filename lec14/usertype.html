@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>input display example</title>
+</head>
+<body>
+    <h1>Type something</h1>
+    <input type="text" id="userinput" onkeyup="showtext()">
+    <p>you typed:<span id="output"></span></p>
+
+    <script>
+        function showtext(){
+           let text= document.getElementById("userinput").value;
+            document.getElementById("output").innerText=text;
+        }
+    </script>
+    
+</body>
+</html>
