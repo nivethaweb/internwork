@@ -7,37 +7,89 @@
 </head>
 <body class="regbody">
 
+<!-- Success Popup -->
+<div class="popup-overlay" id="regPopup">
+    <div class="popup-box">
+        <span class="popup-icon">🎉</span>
+        <h2>Registration Successful!</h2>
+        <p>Your voter account has been created. You can now log in and cast your vote.</p>
+        <button class="popup-btn green" onclick="goToLogin()">Go to Login</button>
+    </div>
+</div>
+
 <div class="regcontainer">
     <div class="reg">
         <h1><img src="https://cdn-icons-png.flaticon.com/128/2920/2920277.png" alt="Register icon"><br>Voter Registration</h1>
         <p>Create your voter account to get started</p>
 
-        <form onsubmit="event.preventDefault(); window.location='login.html';">
-
+        <form id="regForm">
             <label>Full Name</label>
-            <input type="text" placeholder="Enter your full name" required>
+            <input type="text" id="fname" placeholder="Enter your full name" required>
 
             <label>Mobile Number</label>
-            <input type="tel" placeholder="Enter mobile number" maxlength="10" required>
+            <input type="tel" id="mobile" placeholder="Enter mobile number" maxlength="10" required>
 
             <label>Email Address</label>
-            <input type="email" placeholder="Enter email" required>
+            <input type="email" id="email" placeholder="Enter email" required>
 
             <label>Voter ID Number</label>
-            <input type="text" placeholder="Enter your voter ID number" required>
+            <input type="text" id="voterid" placeholder="Enter your voter ID number" required>
 
             <label>Date of Birth</label>
-            <input type="date" required>
+            <input type="date" id="dob" required>
 
-            <button type="submit" class="btn1">Register</button>
-
+            <button type="button" class="btn1" onclick="registerVoter()">Register</button>
         </form>
         <br>
         <div class="reg-link">
-            Already have an account?<a href="login.html">Login Here</a>
+            Already have an account? <a href="login.html">Login Here</a>
         </div>
     </div>
 </div>
 
+<script>
+    function registerVoter() {
+        const fname = document.getElementById('fname').value.trim();
+        const mobile = document.getElementById('mobile').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const voterid = document.getElementById('voterid').value.trim();
+        const dob = document.getElementById('dob').value;
+
+        if (!fname || !mobile || !email || !voterid || !dob) {
+            shakeForm();
+            return;
+        }
+        if (mobile.length !== 10) {
+            const inp = document.getElementById('mobile');
+            inp.style.borderColor = '#ef4444';
+            inp.style.boxShadow = '0 0 10px rgba(239,68,68,0.3)';
+            setTimeout(() => { inp.style.borderColor = ''; inp.style.boxShadow = ''; }, 2000);
+            return;
+        }
+        // Increment count
+        var count = parseInt(sessionStorage.getItem('voterCount') || '0') + 1;
+        sessionStorage.setItem('voterCount', count);
+        document.getElementById('regPopup').setAttribute('data-count', count);
+        document.getElementById('regPopup').classList.add('show');
+    }
+
+    function shakeForm() {
+        const form = document.getElementById('regForm');
+        form.style.animation = 'none';
+        form.style.border = '2px solid #ef4444';
+        form.style.borderRadius = '10px';
+        form.style.padding = '10px';
+        setTimeout(() => {
+            form.style.border = 'none';
+            form.style.padding = '0';
+        }, 2000);
+    }
+
+    function goToLogin() {
+        var count = document.getElementById('regPopup').getAttribute('data-count') || 1;
+        // Save count to URL for home page
+        window.location.href = 'login.html?voters=' + count;
+    }
+    </script>
 </body>
 </html>

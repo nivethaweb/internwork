@@ -15,20 +15,36 @@ body{
     box-shadow:0 2px 10px rgba(0,0,0,.2);
 }
 
-.navbar-brand{
-    font-size:28px;
-    font-weight:bold;
+.navbar-toggler{
+    border: 2px solid white;
 }
 
-.nav-link{
-    color:white ;
-    font-size:18px;
-    margin:0 10px;
-    transition:0.3s;
+.navbar-toggler:focus{
+    box-shadow: none;
 }
 
-.nav-link:hover{
-    color:#dbd8c8 ;
+.navbar-toggler-icon{
+    filter: brightness(0) invert(1);
+}
+
+.nav-link,
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255,255,255,0.6) !important;
+    font-size: 18px;
+    margin: 0 10px;
+    transition: 0.3s;
+    font-weight: 400;
+}
+
+.nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: white !important;
+}
+
+.nav-link.active,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: white !important;
+    font-weight: bold;
 }
 
 
@@ -778,6 +794,16 @@ footer{
     background:linear-gradient(to right , white,rgb(187, 189, 227),rgb(142, 194, 254),white);
     border-radius: 10px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.res-box22 img {
+    display: block;
+    margin: 0 auto 10px auto;
 }
 
 @media (max-width: 500px){
@@ -808,7 +834,6 @@ footer{
     }
 
     /*about*/
-
     .about-hero{
       background:linear-gradient(rgba(8,36,101,0.88), rgba(13,110,253,0.82)),
       url('https://images.unsplash.com/photo-1529101091764-c3526daf38fe?q=80&w=1600') center/cover no-repeat;
@@ -1387,3 +1412,87 @@ footer{
         font-size:15px;
       }
     }
+/*CUSTOM POPUP MODAL*/
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.popup-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+.popup-box {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 35px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  transform: translateY(30px) scale(0.95);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+.popup-overlay.show .popup-box {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+.popup-icon {
+  font-size: 60px;
+  margin-bottom: 15px;
+  display: block;
+  animation: popBounce 0.5s ease;
+}
+@keyframes popBounce {
+  0%   { transform: scale(0); }
+  60%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.popup-box h2 {
+  font-size: 26px;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+.popup-box p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+.popup-btn {
+  display: inline-block;
+  padding: 12px 35px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  text-decoration: none;
+}
+.popup-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  color: white;
+}
+.popup-btn.green { background: #10b981; }
+.popup-btn.green:hover { background: #059669; }
+.popup-btn.orange { background: #f59e0b; }
+.popup-btn.orange:hover { background: #d97706; }
+
+/* search*/
+.candi-card.selected {
+  border: 3px solid #2563eb;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
+  transform: translateY(-6px);
+}

@@ -39,7 +39,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="result.html">Results</a>
+                    <a class="nav-link" id="resultNavLink" href="result.html">Results</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="help.html">Help</a>
@@ -99,17 +99,17 @@
 <section class="box2">
 
     <div class="box21">
-        <h3>12,540</h3>
+        <h3 id="voterCount">0</h3>
         <p>Registered Voters</p>
     </div>
 
     <div class="box21">
-        <h3>8</h3>
+        <h3 id="candCount">4</h3>
         <p>Candidates</p>
     </div>
 
     <div class="box21">
-        <h3>02:14:08</h3>
+        <h3 id="countdown">Loading...</h3>
         <p>Time Left To Vote</p>
     </div>
 
@@ -120,6 +120,44 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+// Load registered voter count
+function loadStats() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var urlCount  = parseInt(urlParams.get('voters')) || 0;
+    var sessCount = parseInt(sessionStorage.getItem('voterCount') || '0');
+    var count = Math.max(urlCount, sessCount);
+    document.getElementById('voterCount').textContent = count;
+
+    // Carry vote data back to result page
+    var v = urlParams.get('v') || sessionStorage.getItem('vi_votes') || '0,0,0,0';
+    var voters = count;
+    var rl = document.getElementById('resultNavLink');
+    if (rl) rl.href = 'result.html?v=' + v + '&voters=' + voters;
+}
+loadStats();
+
+// timer 
+function updateCountdown() {
+    var et = parseInt(sessionStorage.getItem('voteEndTime') || '0');
+    if (!et) {
+        document.getElementById('countdown').textContent = '02:00';
+        return;
+    }
+    var diff = et - Date.now();
+    if (diff <= 0) {
+        document.getElementById('countdown').textContent = '00:00';
+        return;
+    }
+    var m = String(Math.floor(diff / 60000)).padStart(2,'0');
+    var s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+    document.getElementById('countdown').textContent = m + ':' + s;
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
 
 </body>
 </html>

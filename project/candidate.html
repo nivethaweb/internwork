@@ -22,13 +22,13 @@
         <div class="collapse navbar-collapse" id="menu">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="index.html">Home</a>
+                    <a class="nav-link" href="index.html">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="about.html">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="candidate.html">Candidates</a>
+                    <a class="nav-link active" href="candidate.html">Candidates</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="result.html">Results</a>
@@ -52,53 +52,138 @@
 
   <div class="search-box">
          <img src="https://cdn-icons-png.flaticon.com/128/17216/17216943.png" class="search-icon">
-         <input type="text" placeholder="Search Candidate or Party">
+         <input type="text" id="searchInput" placeholder="Search Candidate or Party" oninput="searchCandidates()">
     </div>
 
 <div class="candi-box">
-    <div class="candi-card">
+    <div class="candi-card" id="card0" data-name="priya raman" data-party="progress party">
         <img src="https://cdn-icons-png.flaticon.com/128/2922/2922656.png">
         <h2>Priya Raman</h2>
        <div class="party-name">Progress Party</div><br>
         <img src="https://cdn-icons-png.flaticon.com/128/231/231755.png">
         <p>Focused on infrastructure development, education reform and youth employment.</p>
-        <button>Select</button>
+        <button id="btn0" onclick="selectCandidate(0)">Vote</button>
     </div>
 
-    <div class="candi-card">
+    <div class="candi-card" id="card1" data-name="joseph vijay" data-party="tamilaga vettri kazhagam">
         <img src="https://cdn-icons-png.flaticon.com/128/7658/7658114.png">
         <h2>Joseph vijay</h2>
         <div class="party-name">Tamilaga Vettri Kazhagam</div><br>
         <img src="https://cdn-icons-png.flaticon.com/128/7458/7458910.png">
         <p>Focused on youth development,education and employment opportunities.</p>
-        <button>Select</button>
+        <button id="btn1" onclick="selectCandidate(1)">Vote</button>
     </div>
 
-    <div class="candi-card">
+    <div class="candi-card" id="card2" data-name="karthik selvam" data-party="peoples alliance">
         <img src="https://cdn-icons-png.flaticon.com/128/6997/6997674.png">
         <h2>Karthik Selvam</h2>
         <div class="party-name">People's Alliance</div><br>
         <img src="https://cdn-icons-png.flaticon.com/128/6372/6372182.png">
         <p>Champions agriculture support, clean energy and rural connectivity.</p>
-        <button>Select</button>
+        <button id="btn2" onclick="selectCandidate(2)">Vote</button>
     </div>
 
-    <div class="candi-card">
+    <div class="candi-card" id="card3" data-name="meena vasanth" data-party="new horizon">
         <img src="https://cdn-icons-png.flaticon.com/128/6997/6997662.png">
         <h2>Meena Vasanth</h2>
         <div class="party-name">New Horizon</div><br>
         <img src="https://cdn-icons-png.flaticon.com/128/9675/9675327.png">
         <p>Prioritizes digital governance, public transport and environmental policy.</p>
-        <button>Select</button>
+        <button id="btn3" onclick="selectCandidate(3)">Vote</button>
     </div>
- <div class="candi-btn">
-    <p>No candidate selected yet</p>
-    <button>Confim Vote</button>
- </div>
 
 
 </div>
+
+<div class="candi-btn">
+    <p id="selectedLabel">No candidate selected yet</p>
+    <button onclick="confirmVote()">Confirm Vote</button>
+</div>
  
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="popup-overlay" id="confirmPopup">
+    <div class="popup-box">
+        <span class="popup-icon">🗳️</span>
+        <h2>Confirm Your Vote</h2>
+        <p id="confirmMsg">Are you sure you want to vote?</p>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:10px;">
+            <button class="popup-btn green" onclick="doVote()">✅ Yes, Vote!</button>
+            <button class="popup-btn orange" onclick="document.getElementById('confirmPopup').classList.remove('show')">❌ Cancel</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.candi-card button { transition: background-color 0.3s; }
+</style>
+<script>
+var selectedIdx = -1;
+
+function searchCandidates() {
+    var query = document.getElementById('searchInput').value.toLowerCase();
+    var cards = document.querySelectorAll('.candi-card');
+    cards.forEach(function(card) {
+        var name  = card.getAttribute('data-name');
+        var party = card.getAttribute('data-party');
+        if (name.includes(query) || party.includes(query)) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+var names = ['Priya Raman', 'Joseph vijay', 'Karthik Selvam', 'Meena Vasanth'];
+
+function getCurrentVotes() {
+    var params = new URLSearchParams(window.location.search);
+    var v = params.get('v');
+    if (!v) return [0,0,0,0];
+    return v.split(',').map(function(x){ return parseInt(x)||0; });
+}
+
+function selectCandidate(idx) {
+    selectedIdx = idx;
+    
+    // buttons
+    for (var i = 0; i < 4; i++) {
+        document.getElementById('btn' + i).textContent = 'Vote';
+        document.getElementById('btn' + i).style.backgroundColor = '';
+    }
+    // Green on selected button
+    document.getElementById('btn' + idx).textContent = '✔ Selected';
+    document.getElementById('btn' + idx).style.backgroundColor = '#16a34a';
+
+    // Update label
+    var lbl = document.getElementById('selectedLabel');
+    lbl.textContent = '✅ Selected: ' + names[idx];
+    lbl.style.color = '#16a34a';
+}
+
+function doVote() {
+    document.getElementById('confirmPopup').classList.remove('show');
+    var votes = getCurrentVotes();
+    votes[selectedIdx]++;
+    window.location.href = 'result.html?v=' + votes.join(',');
+}
+
+function confirmVote() {
+    if (selectedIdx === -1) {
+        var lbl = document.getElementById('selectedLabel');
+        lbl.textContent = 'Please select a candidate';
+        lbl.style.color = 'red';
+        lbl.style.fontWeight = 'bold';
+        setTimeout(function() {
+            lbl.textContent = 'No candidate selected yet';
+            lbl.style.color = '';
+            lbl.style.fontWeight = '';
+        }, 2500);
+        return;
+    }
+    document.getElementById('confirmMsg').textContent =
+        'Are you sure you want to vote for ' + names[selectedIdx] + '?';
+    document.getElementById('confirmPopup').classList.add('show');
+}
+</script>
 </body>
 </html>
