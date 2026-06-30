@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | VoteIndia</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="loginScreen" class="login-body">
+    <div class="login-box">
+        <span style="font-size:52px;">🛡️</span>
+        <h1>Admin Login</h1>
+        <p>VoteIndia Election Control Panel</p>
+        <input type="text" id="adminUser" placeholder="Username">
+        <input type="password" id="adminPass" placeholder="Password">
+        <button class="login-btn" onclick="adminLogin()">Login to Admin Panel</button>
+        <p class="error-msg" id="loginError">❌ Invalid username or password</p>
+        <p style="margin-top:18px;font-size:13px;color:#aaa;">Demo: admin / admin123</p>
+        <br><a href="index.html" style="font-size:14px;color:#2563eb;text-decoration:none;">← Back to Home</a>
+    </div>
+</div>
+
+/*DASHBOARD*/
+
+<div id="dashboard" style="display:none;">
+<div class="admin-body">
+
+    <div class="admin-nav">
+        <div class="brand">🗳 VoteIndia <span>Admin</span></div>
+        <button class="logout-btn" onclick="adminLogout()">🚪 Logout</button>
+    </div>
+
+    <div class="admin-wrap">
+
+        <!-- Welcome -->
+        <div class="welcome-banner">
+            <div>
+                <h2>👋 Welcome, Admin!</h2>
+                <p>Monitor and control the VoteIndia election in real-time.</p>
+            </div>
+            <div class="live-badge">🔴 LIVE</div>
+        </div>
+
+        <!-- Voting Open/Close -->
+        <div class="voting-status-bar">
+            <div>
+                <h3>🗳️ Voting Status</h3>
+                <div class="status-indicator" style="margin-top:6px;">
+                    <span class="status-dot open" id="statusDot"></span>
+                    <span class="status-text" id="statusText">Voting Open</span>
+                </div>
+            </div>
+            <button class="toggle-vote-btn close-btn" id="toggleVoteBtn" onclick="toggleVoting()">🔒 Close Voting</button>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-num" id="aVoterCount">0</div>
+                <div class="stat-label">Registered Voters</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🗳️</div>
+                <div class="stat-num" id="aTotalVotes">0</div>
+                <div class="stat-label">Total Votes Cast</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👤</div>
+                <div class="stat-num" id="aCandCount">0</div>
+                <div class="stat-label">Candidates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-num" id="aTurnout">0%</div>
+                <div class="stat-label">Voter Turnout</div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h3>📊 Live Vote Results</h3>
+            <div id="aResults"></div>
+        </div>
+
+        <div class="section-card">
+            <h3>⏱️ Timer Control</h3>
+            <div class="timer-display" id="aTimer">02:00</div>
+            <div class="timer-btns">
+                <button class="btn-reset" onclick="resetTimer()">🔄 Reset (2 min)</button>
+                <button class="btn-add"   onclick="addTime()">➕ Add 1 Min</button>
+                <button class="btn-stop"  onclick="stopTimer()">⏹ Stop Timer</button>
+            </div>
+        </div>
+
+
+        <div class="section-card">
+            <h3>👤 Manage Candidates</h3>
+            <div class="candi-manage-grid" id="aCandiGrid"></div>
+        </div>
+
+        <div class="section-card">
+            <h3>👥 Registered Voter List</h3>
+            <input type="text" class="voter-search" id="voterSearch" placeholder="🔍 Search by name or mobile..." oninput="filterVoters()">
+            <div id="voterListWrap"></div>
+        </div>
+
+        <div class="section-card">
+            <h3>⚠️ Election Control</h3>
+            <div class="reset-box">
+                <p>This will <strong>clear all votes</strong>, <strong>reset the timer</strong>, and <strong>restore original candidates</strong> to start a fresh election.</p>
+                <button class="danger-btn" onclick="showPop('resetPop')">🗑️ Reset Election</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+<div class="pop-overlay" id="resetPop">
+    <div class="pop-box">
+        <span style="font-size:52px;">⚠️</span>
+        <h2>Confirm Reset?</h2>
+        <p>All votes will be cleared and timer will restart. This cannot be undone.</p>
+        <button class="pop-btn red" onclick="doReset()">Yes, Reset</button>
+        <button class="pop-btn gray" onclick="hidePop('resetPop')">Cancel</button>
+    </div>
+</div>
+
+<div class="pop-overlay" id="removePop">
+    <div class="pop-box">
+        <span style="font-size:52px;">🗑️</span>
+        <h2>Remove Candidate?</h2>
+        <p id="removeMsg">Are you sure?</p>
+        <button class="pop-btn red" onclick="doRemove()">Yes, Remove</button>
+        <button class="pop-btn gray" onclick="hidePop('removePop')">Cancel</button>
+    </div>
+</div>
+
+<div class="pop-overlay" id="successPop">
+    <div class="pop-box">
+        <span style="font-size:52px;" id="sucIcon">✅</span>
+        <h2 id="sucTitle">Done!</h2>
+        <p id="sucMsg"></p>
+        <button class="pop-btn green" onclick="hidePop('successPop')">OK</button>
+    </div>
+</div>
+
+<div class="pop-overlay" id="votingClosedPop">
+    <div class="pop-box">
+        <span style="font-size:52px;">🔒</span>
+        <h2>Voting Closed!</h2>
+        <p>Admin has closed the voting. No more votes can be cast until admin reopens it.</p>
+        <button class="pop-btn blue" onclick="hidePop('votingClosedPop')">OK</button>
+    </div>
+</div>
+</body>
+
+<script>
+// data
+var DEFAULT_CANDIDATES = [
+    {name:'Priya Raman',   party:'Progress Party',           img:'https://cdn-icons-png.flaticon.com/128/231/231755.png',   desc:'Focused on infrastructure development, education reform and youth employment.'},
+    {name:'Joseph vijay',  party:'Tamilaga Vettri Kazhagam', img:'https://cdn-icons-png.flaticon.com/128/7458/7458910.png',  desc:'Focused on youth development, education and employment opportunities.'},
+    {name:'Karthik Selvam',party:"People's Alliance",        img:'https://cdn-icons-png.flaticon.com/128/6372/6372182.png',  desc:'Champions agriculture support, clean energy and rural connectivity.'},
+    {name:'Meena Vasanth', party:'New Horizon',              img:'https://cdn-icons-png.flaticon.com/128/9675/9675327.png',  desc:'Prioritizes digital governance, public transport and environmental policy.'}
+];
+var COLORS = ['#2563eb','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6','#f97316'];
+var DEFAULT_AVATARS = [
+    'https://cdn-icons-png.flaticon.com/128/2922/2922656.png',
+    'https://cdn-icons-png.flaticon.com/128/7658/7658114.png',
+    'https://cdn-icons-png.flaticon.com/128/6997/6997674.png',
+    'https://cdn-icons-png.flaticon.com/128/6997/6997662.png',
+    'https://cdn-icons-png.flaticon.com/128/1077/1077012.png',
+    'https://cdn-icons-png.flaticon.com/128/1077/1077063.png'
+];
+
+function getCandidates() {
+    var s = localStorage.getItem('vi_candidates');
+    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_CANDIDATES));
+}
+function saveCandidates(arr) { localStorage.setItem('vi_candidates', JSON.stringify(arr)); }
+
+function getVotes() {
+    var cands = getCandidates();
+    var s = sessionStorage.getItem('vi_votes');
+    var arr = s ? s.split(',').map(function(x){return parseInt(x)||0;}) : [];
+    while (arr.length < cands.length) arr.push(0);
+    return arr;
+}
+
+function getVoters() {
+    var s = localStorage.getItem('vi_voters');
+    return s ? JSON.parse(s) : [];
+}
+
+//login
+function adminLogin() {
+    var u = document.getElementById('adminUser').value.trim();
+    var p = document.getElementById('adminPass').value.trim();
+    if (u === 'admin' && p === 'admin123') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('dashboard').style.display   = 'block';
+        initDashboard();
+    } else {
+        var e = document.getElementById('loginError');
+        e.style.display = 'block';
+        setTimeout(function(){e.style.display='none';}, 2500);
+    }
+}
+document.getElementById('adminPass').addEventListener('keydown', function(e){ if(e.key==='Enter') adminLogin(); });
+document.getElementById('adminUser').addEventListener('keydown', function(e){ if(e.key==='Enter') adminLogin(); });
+
+function adminLogout() {
+    document.getElementById('dashboard').style.display   = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminUser').value = '';
+    document.getElementById('adminPass').value = '';
+    if (timerInterval) clearInterval(timerInterval);
+}
+
+var timerInterval = null;
+
+function initDashboard() {
+    updateVotingStatusUI();
+    renderStats();
+    renderResults();
+    renderCandidates();
+    renderVoterList();
+    startAdminTimer();
+}
+
+// open/close
+function isVotingOpen() { return sessionStorage.getItem('vi_voting_open') !== 'closed'; }
+
+function toggleVoting() {
+    if (isVotingOpen()) {
+        sessionStorage.setItem('vi_voting_open', 'closed');
+        showSuccess('🔒', 'Voting Closed!', 'Voters cannot cast votes until you reopen it.');
+    } else {
+        sessionStorage.setItem('vi_voting_open', 'open');
+        showSuccess('🔓', 'Voting Opened!', 'Voters can now cast their votes.');
+    }
+    updateVotingStatusUI();
+}
+
+function updateVotingStatusUI() {
+    var open = isVotingOpen();
+    document.getElementById('statusDot').className  = 'status-dot ' + (open ? 'open' : 'closed');
+    document.getElementById('statusText').textContent = open ? 'Voting Open' : 'Voting Closed';
+    document.getElementById('statusText').style.color = open ? '#10b981' : '#ef4444';
+    var btn = document.getElementById('toggleVoteBtn');
+    btn.textContent = open ? '🔒 Close Voting' : '🔓 Open Voting';
+    btn.className   = 'toggle-vote-btn ' + (open ? 'close-btn' : 'open-btn');
+}
+
+// trunout
+function renderStats() {
+    var cands   = getCandidates();
+    var votes   = getVotes();
+    var total   = votes.reduce(function(a,b){return a+b;},0);
+    var voters  = parseInt(localStorage.getItem('voterCount')||'0');
+    var turnout = voters===0 ? 0 : Math.min(100,Math.round((total/voters)*100));
+    document.getElementById('aVoterCount').textContent = voters;
+    document.getElementById('aTotalVotes').textContent = total;
+    document.getElementById('aCandCount').textContent  = cands.length;
+    document.getElementById('aTurnout').textContent    = turnout + '%';
+}
+
+// result
+function renderResults() {
+    var cands = getCandidates();
+    var votes = getVotes();
+    var total = votes.reduce(function(a,b){return a+b;},0);
+    var maxV  = Math.max.apply(null,votes);
+    var html  = '';
+    cands.forEach(function(c,i) {
+        var pct = total===0 ? 0 : Math.round((votes[i]/total)*100);
+        var leading = total>0 && votes[i]===maxV;
+        html += '<div class="result-row">' +
+            '<img src="'+c.img+'">' +
+            '<div><div class="cname">'+c.name+(leading?' <span class="leading-badge">Leading</span>':'')+'</div><div class="cparty">'+c.party+'</div></div>' +
+            '<div class="cbar-wrap"><div class="cbar-bg"><div class="cbar-fill" style="width:'+pct+'%;background:'+(COLORS[i]||'#2563eb')+'">'+( pct>8?pct+'%':'')+'</div></div></div>' +
+            '<div class="cvotes">'+votes[i]+' votes</div></div>';
+    });
+    if (!html) html = '<p style="color:#999;text-align:center;padding:20px;">No candidates yet.</p>';
+    document.getElementById('aResults').innerHTML = html;
+}
+
+// candidate
+function renderCandidates() {
+    var cands = getCandidates();
+    var votes = getVotes();
+    var html  = '';
+    cands.forEach(function(c,i) {
+        html += '<div class="candi-manage-card">' +
+            '<img src="'+c.img+'">' +
+            '<h4>'+c.name+'</h4>' +
+            '<p>'+c.party+'</p>' +
+            '<span class="vote-badge">🗳 '+votes[i]+' votes</span><br>' +
+            '<button class="remove-btn" onclick="confirmRemove('+i+')">🗑 Remove</button>' +
+        '</div>';
+    });
+    document.getElementById('aCandiGrid').innerHTML = html;
+    document.getElementById('aCandCount').textContent = cands.length;
+}
+
+var removeIdx = -1;
+function confirmRemove(idx) {
+    var cands = getCandidates();
+    removeIdx = idx;
+    document.getElementById('removeMsg').textContent = 'Remove "'+cands[idx].name+'" from the election?';
+    showPop('removePop');
+}
+function doRemove() {
+    hidePop('removePop');
+    var cands = getCandidates();
+    var votes = getVotes();
+    cands.splice(removeIdx, 1);
+    votes.splice(removeIdx, 1);
+    saveCandidates(cands);
+    sessionStorage.setItem('vi_votes', votes.join(','));
+    renderCandidates();
+    renderResults();
+    renderStats();
+    showSuccess('🗑️','Candidate Removed!', 'The candidate has been removed from the election.');
+}
+
+// list
+function renderVoterList(filter) {
+    var voters = getVoters();
+    var wrap   = document.getElementById('voterListWrap');
+    if (voters.length === 0) {
+        wrap.innerHTML = '<p class="no-voters">📭 No registered voters yet.</p>';
+        return;
+    }
+    var filtered = filter ? voters.filter(function(v){
+        return (v.name||'').toLowerCase().includes(filter) ||
+               (v.mobile||'').includes(filter);
+    }) : voters;
+
+    var html = '<table class="voter-table"><thead><tr>' +
+        '<th>#</th><th>Full Name</th><th>Mobile</th><th>Email</th><th>Voter ID</th><th>DOB</th>' +
+        '</tr></thead><tbody>';
+    if (filtered.length === 0) {
+        html += '<tr><td colspan="6" class="no-voters">No results found.</td></tr>';
+    } else {
+        filtered.forEach(function(v,i){
+            html += '<tr><td>'+(i+1)+'</td><td>'+( v.name||'-')+'</td><td>'+(v.mobile||'-')+'</td>' +
+                '<td>'+(v.email||'-')+'</td><td>'+(v.voterid||'-')+'</td><td>'+(v.dob||'-')+'</td></tr>';
+        });
+    }
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+}
+
+function filterVoters() {
+    var q = document.getElementById('voterSearch').value.toLowerCase().trim();
+    renderVoterList(q || null);
+}
+
+// timer 
+function startAdminTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(function(){
+        updateAdminTimer();
+        renderStats();
+        renderResults();
+        renderCandidates();
+    }, 1000);
+    updateAdminTimer();
+}
+
+function updateAdminTimer() {
+    var et   = parseInt(sessionStorage.getItem('voteEndTime')||'0');
+    var el   = document.getElementById('aTimer');
+    if (!et) { el.textContent='00:00'; el.style.color='#ef4444'; return; }
+    var diff = et - Date.now();
+    if (diff <= 0) { el.textContent='00:00'; el.style.color='#ef4444'; return; }
+    var m = String(Math.floor(diff/60000)).padStart(2,'0');
+    var s = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+    el.textContent = m+':'+s;
+    el.style.color = diff < 30000 ? '#ef4444' : '#082465';
+}
+
+function resetTimer() {
+    sessionStorage.setItem('voteEndTime', Date.now() + 2*60*1000);
+    updateAdminTimer();
+    showSuccess('🔄','Timer Reset!','Election timer has been reset to 2 minutes.');
+}
+function addTime() {
+    var et = parseInt(sessionStorage.getItem('voteEndTime')||Date.now());
+    if (et < Date.now()) et = Date.now();
+    sessionStorage.setItem('voteEndTime', et + 60*1000);
+    updateAdminTimer();
+    showSuccess('➕','1 Minute Added!','Timer has been extended by 1 minute.');
+}
+function stopTimer() {
+    sessionStorage.setItem('voteEndTime', Date.now()-1);
+    updateAdminTimer();
+    showSuccess('⏹','Timer Stopped!','The election timer has been stopped.');
+}
+
+// reset
+function doReset() {
+    hidePop('resetPop');
+    sessionStorage.removeItem('vi_votes');
+    sessionStorage.removeItem('vi_voted');
+    sessionStorage.setItem('voteEndTime', Date.now() + 2*60*1000);
+    sessionStorage.setItem('vi_voting_open','open');
+    localStorage.removeItem('voterCount');
+    localStorage.removeItem('vi_candidates');
+    localStorage.removeItem('vi_voters');
+    updateVotingStatusUI();
+    renderStats();
+    renderResults();
+    renderCandidates();
+    renderVoterList();
+    updateAdminTimer();
+    showSuccess('🗑️','Election Reset!','All votes cleared. Fresh election is ready!');
+}
+//popup
+function showPop(id) { document.getElementById(id).classList.add('show'); }
+function hidePop(id) { document.getElementById(id).classList.remove('show'); }
+function showSuccess(icon, title, msg) {
+    document.getElementById('sucIcon').textContent  = icon;
+    document.getElementById('sucTitle').textContent = title;
+    document.getElementById('sucMsg').textContent   = msg;
+    showPop('successPop');
+}
+</script>
+</html>
