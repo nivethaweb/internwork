@@ -117,43 +117,46 @@
 
 <footer>
     <p>© 2026 Online Voting System | All Rights Reserved</p>
+    <p style="margin-top:6px;"><a href="admin.html" style="color:rgba(255,255,255,0.25);font-size:12px;text-decoration:none;">Admin</a></p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
 <script>
-// Load registered voter count
+//registered voter
 function loadStats() {
     var urlParams = new URLSearchParams(window.location.search);
     var urlCount  = parseInt(urlParams.get('voters')) || 0;
-    var sessCount = parseInt(sessionStorage.getItem('voterCount') || '0');
+    var sessCount = parseInt(localStorage.getItem('voterCount') || '0');
     var count = Math.max(urlCount, sessCount);
+    if (count > 0) localStorage.setItem('voterCount', count);
     document.getElementById('voterCount').textContent = count;
 
-    // Carry vote data back to result page
     var v = urlParams.get('v') || sessionStorage.getItem('vi_votes') || '0,0,0,0';
-    var voters = count;
     var rl = document.getElementById('resultNavLink');
-    if (rl) rl.href = 'result.html?v=' + v + '&voters=' + voters;
+    if (rl) rl.href = 'result.html?v=' + v + '&voters=' + count;
 }
 loadStats();
 
-// timer 
+//timer 
+if (!sessionStorage.getItem('voteEndTime')) {
+    sessionStorage.setItem('voteEndTime', Date.now() + 2 * 60 * 1000);
+}
+
+// Timer countdown
 function updateCountdown() {
-    var et = parseInt(sessionStorage.getItem('voteEndTime') || '0');
-    if (!et) {
-        document.getElementById('countdown').textContent = '02:00';
-        return;
-    }
+    var et = parseInt(sessionStorage.getItem('voteEndTime'));
     var diff = et - Date.now();
     if (diff <= 0) {
-        document.getElementById('countdown').textContent = '00:00';
+        document.getElementById('countdown').textContent = 'Expired';
+        document.getElementById('countdown').style.color = '#ef4444';
         return;
     }
     var m = String(Math.floor(diff / 60000)).padStart(2,'0');
     var s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
     document.getElementById('countdown').textContent = m + ':' + s;
+    document.getElementById('countdown').style.color = diff < 30000 ? '#ef4444' : '#ffd166';
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
