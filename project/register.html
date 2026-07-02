@@ -66,9 +66,21 @@
             setTimeout(() => { inp.style.borderColor = ''; inp.style.boxShadow = ''; }, 2000);
             return;
         }
-        // Increment count
-        var count = parseInt(sessionStorage.getItem('voterCount') || '0') + 1;
+        // Increment count using localStorage
+        var count = parseInt(localStorage.getItem('voterCount') || '0') + 1;
+        localStorage.setItem('voterCount', count);
         sessionStorage.setItem('voterCount', count);
+
+        // Save voter details to localStorage for admin voter list
+        var voters = JSON.parse(localStorage.getItem('vi_voters') || '[]');
+        voters.push({
+            name:    fname,
+            mobile:  mobile,
+            email:   email,
+            voterid: voterid,
+            dob:     dob
+        });
+        localStorage.setItem('vi_voters', JSON.stringify(voters));
         document.getElementById('regPopup').setAttribute('data-count', count);
         document.getElementById('regPopup').classList.add('show');
     }
@@ -87,8 +99,7 @@
 
     function goToLogin() {
         var count = document.getElementById('regPopup').getAttribute('data-count') || 1;
-        // Save count to URL for home page
-        window.location.href = 'login.html?voters=' + count;
+        window.location.href = 'login.html?voters=' + count;//count url
     }
     </script>
 </body>

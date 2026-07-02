@@ -114,11 +114,58 @@
     </div>
 </div>
 
+<!-- Already Voted / Voting Closed Popup -->
+<div class="popup-overlay" id="alreadyVotedPopup">
+    <div class="popup-box">
+        <span class="popup-icon" id="alreadyIcon">🚫</span>
+        <h2 id="alreadyTitle">Already Voted!</h2>
+        <p id="alreadyMsg">You have already cast your vote in this election. Each voter can vote only once.</p>
+        <button class="popup-btn green" onclick="window.location.href='result.html'">View Results</button>
+    </div>
+</div>
+
+<!-- Vote Receipt Popup -->
+<div class="popup-overlay" id="receiptPopup">
+    <div class="popup-box">
+        <span class="popup-icon">🎉</span>
+        <h2>Vote Cast Successfully!</h2>
+        <div style="background:#f0f9ff; border-radius:12px; padding:15px; margin:10px 0;">
+            <img id="receiptImg" src="" style="width:60px; border-radius:50%; margin-bottom:8px;">
+            <h3 id="receiptName" style="color:#082465; font-size:20px; margin:5px 0;"></h3>
+            <p id="receiptParty" style="color:#2563eb; font-weight:bold; margin:0;"></p>
+        </div>
+        <p style="color:#555; font-size:14px; margin-top:10px;">🕒 Voted at: <span id="receiptTime"></span></p>
+        <button class="popup-btn green" onclick="goToResult()" style="margin-top:10px;">View Live Results →</button>
+    </div>
+</div>
+
 <style>
 .candi-card button { transition: background-color 0.3s; }
 </style>
 <script>
 var selectedIdx = -1;
+
+//vote
+window.onload = function() {
+    if (sessionStorage.getItem('vi_voting_open') === 'closed') {
+        document.getElementById('alreadyVotedPopup').classList.add('show');
+        document.querySelector('.candi-btn button').disabled = true;
+        document.querySelector('.candi-btn button').textContent = '🔒 Voting Closed';
+        document.querySelector('.candi-btn button').style.backgroundColor = '#9ca3af';
+        for (var i = 0; i < 4; i++) {
+            var btn = document.getElementById('btn' + i);
+            if (btn) { btn.disabled = true; btn.textContent = '🔒 Closed'; btn.style.backgroundColor = '#9ca3af'; }
+        }
+        return;
+    }
+    if (sessionStorage.getItem('vi_voted') === 'yes') {
+        document.getElementById('alreadyVotedPopup').classList.add('show');
+        for (var i = 0; i < 4; i++) {
+            var btn = document.getElementById('btn' + i);
+            if (btn) { btn.disabled = true; btn.textContent = '🚫 Voted'; btn.style.backgroundColor = '#9ca3af'; }
+        }
+    }
+};
 
 function searchCandidates() {
     var query = document.getElementById('searchInput').value.toLowerCase();
@@ -133,7 +180,15 @@ function searchCandidates() {
         }
     });
 }
-var names = ['Priya Raman', 'Joseph vijay', 'Karthik Selvam', 'Meena Vasanth'];
+
+var names  = ['Priya Raman', 'Joseph vijay', 'Karthik Selvam', 'Meena Vasanth'];
+var imgs   = [
+    'https://cdn-icons-png.flaticon.com/128/231/231755.png',
+    'https://cdn-icons-png.flaticon.com/128/7458/7458910.png',
+    'https://cdn-icons-png.flaticon.com/128/6372/6372182.png',
+    'https://cdn-icons-png.flaticon.com/128/9675/9675327.png'
+];
+var parties = ['Progress Party', 'Tamilaga Vettri Kazhagam', "People's Alliance", 'New Horizon'];
 
 function getCurrentVotes() {
     var params = new URLSearchParams(window.location.search);
@@ -143,31 +198,50 @@ function getCurrentVotes() {
 }
 
 function selectCandidate(idx) {
+    if (sessionStorage.getItem('vi_voted') === 'yes') return;
     selectedIdx = idx;
-    
-    // buttons
     for (var i = 0; i < 4; i++) {
         document.getElementById('btn' + i).textContent = 'Vote';
         document.getElementById('btn' + i).style.backgroundColor = '';
     }
-    // Green on selected button
     document.getElementById('btn' + idx).textContent = '✔ Selected';
     document.getElementById('btn' + idx).style.backgroundColor = '#16a34a';
-
-    // Update label
     var lbl = document.getElementById('selectedLabel');
     lbl.textContent = '✅ Selected: ' + names[idx];
     lbl.style.color = '#16a34a';
 }
 
+var pendingVotes = null;
+
 function doVote() {
     document.getElementById('confirmPopup').classList.remove('show');
     var votes = getCurrentVotes();
     votes[selectedIdx]++;
-    window.location.href = 'result.html?v=' + votes.join(',');
+    pendingVotes = votes;
+
+    // Mark as voted
+    sessionStorage.setItem('vi_voted', 'yes');
+    sessionStorage.setItem('vi_votes', votes.join(','));
+
+    // Show vote receipt
+    document.getElementById('receiptName').textContent  = names[selectedIdx];
+    document.getElementById('receiptParty').textContent = parties[selectedIdx];
+    document.getElementById('receiptImg').src           = imgs[selectedIdx];
+    var now = new Date();
+    document.getElementById('receiptTime').textContent  =
+        now.toLocaleTimeString() + ', ' + now.toLocaleDateString();
+    document.getElementById('receiptPopup').classList.add('show');
+}
+
+function goToResult() {
+    window.location.href = 'result.html?v=' + pendingVotes.join(',');
 }
 
 function confirmVote() {
+    if (sessionStorage.getItem('vi_voted') === 'yes') {
+        document.getElementById('alreadyVotedPopup').classList.add('show');
+        return;
+    }
     if (selectedIdx === -1) {
         var lbl = document.getElementById('selectedLabel');
         lbl.textContent = 'Please select a candidate';
